@@ -168,10 +168,7 @@ async fn handler(
     }
 
     let chat_id = format!("PR#{pull_number}");
-    let system = &format!("You are an experienced software developer acting as a reviewer for a GitHub Pull Request titled \"{}\". \
-                        Ensure the total character count of your response remains below 9000 characters. \
-                        Please provide a concise review of the changes.",
-                        title);
+    let system = &format!("You are an experienced software developer. You will act as a reviewer for a GitHub Pull Request titled \"{}\".", title);
     let mut openai = OpenAIFlows::new();
     openai.set_retry_times(3);
 
@@ -185,7 +182,7 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = "The following is a GitHub patch. Please summarize the key changes and identify potential problems. Start with the most important findings.\n\n".to_string() + truncate(commit, CHAR_SOFT_LIMIT);
+        let question = &format!("Review the GitHub patch linked below and summarize the key changes, highlight potential issues, and suggest improvements. Please keep your review concise and within the character limit of \"{}\".", CHAR_SOFT_LIMIT);
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 if reviews_text.len() < CHAR_SOFT_LIMIT {
