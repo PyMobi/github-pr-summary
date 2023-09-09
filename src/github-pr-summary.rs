@@ -204,7 +204,7 @@ async fn handler(
     }
 
     let mut resp = String::new();
-    resp.push_str("Hello, I am a [code review bot](https://github.com/PyMobi/github-pr-summary/) on [PyMobi](https://github.com/PyMobi). Here are my reviews of code commits in this PR.\n\n------\n\n");
+    resp.push_str("Hello :hand:, I am a [code review bot](https://github.com/PyMobi/github-pr-summary/) on [PyMobi](https://github.com/PyMobi) :robot:. Here are my reviews of code commits in this PR.\n\n------\n\n");
     if reviews.len() > 1 {
         log::debug!("Sending all reviews to OpenAI for summarization");
         let co = ChatOptions {
@@ -218,6 +218,7 @@ async fn handler(
                         Please present the potential issues and errors, \
                         following by the most important findings and improvements in your summary. \
                         Make a list with each item to be more readable. \
+                        Your response will be used on a github comment, could you add some text markup and some emojis. \
                         Please be very concise highlight potential issues, and suggest improvements.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
