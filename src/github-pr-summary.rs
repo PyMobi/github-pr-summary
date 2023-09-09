@@ -223,6 +223,7 @@ async fn handler(
         let question = "Based on the individual summaries above, please provide an overall conclusion for this pull request. \
                         Highlight potential issues, suggest improvements, and summarize the most critical findings. \
                         Please be very concise and try to not repeat yourself in your answers. \
+                        Make a list with each item to be more readable. \
                         Use emojis and text markup to make your response more engaging and readable. \
                         \n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
