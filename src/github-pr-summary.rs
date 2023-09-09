@@ -215,13 +215,14 @@ async fn handler(
         let question = "Here is a set of summaries for software source code patches. \
                         Each summary starts with a ------ line. \
                         Please write an overall summary considering all the individual summary. \
-                        Please present the potential issues and errors first, \
-                        following by the most important findings, in your summary. \
+                        Please present the potential issues and errors, \
+                        following by the most important findings and improvements in your summary. \
+                        Make a list with each item to be more readable. \
                         Please be very concise highlight potential issues, and suggest improvements.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 resp.push_str(&r.choice);
-                resp.push_str("\n\n## Details\n\n");
+                // resp.push_str("\n\n## Details\n\n");
                 log::debug!("Received the overall summary");
             }
             Err(e) => {
