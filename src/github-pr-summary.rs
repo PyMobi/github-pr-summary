@@ -190,11 +190,12 @@ async fn handler(
                     reviews_text.push_str(&r.choice);
                     reviews_text.push_str("\n");
                 }
-                let mut review = String::new();
-                review.push_str(&format!("### [Commit {commit_hash}](https://github.com/{owner}/{repo}/pull/{pull_number}/commits/{commit_hash})\n"));
-                review.push_str(&r.choice);
-                review.push_str("\n\n");
-                reviews.push(review);
+                // Commented because we don't want a detail of each commit
+                // let mut review = String::new();
+                // review.push_str(&format!("### [Commit {commit_hash}](https://github.com/{owner}/{repo}/pull/{pull_number}/commits/{commit_hash})\n"));
+                // review.push_str(&r.choice);
+                // review.push_str("\n\n");
+                // reviews.push(review);
                 log::debug!("Received OpenAI resp for patch: {}", commit_hash);
             }
             Err(e) => {
@@ -212,10 +213,12 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = "Here is a set of summaries for software source code. \
-                        Create one summary using all commits prioritizing last changes in commits. \
-                        Please write an overall summary but very concise, highlight potential issues, and suggest improvements. \
-                        Please keep your review concise and within the character max limit of 9000.\n\n".to_string() + &reviews_text;
+        let question = "Here is a set of summaries for software source code patches. \
+                        Each summary starts with a ------ line. \
+                        Please write an overall summary considering all the individual summary. \
+                        Please present the potential issues and errors first, \
+                        following by the most important findings, in your summary. \
+                        Please be very concise highlight potential issues, and suggest improvements.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 resp.push_str(&r.choice);
