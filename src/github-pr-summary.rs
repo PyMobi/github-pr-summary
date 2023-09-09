@@ -169,8 +169,8 @@ async fn handler(
 
     let chat_id = format!("PR#{pull_number}");
     let system = &format!("You are an experienced software developer. You will act as a reviewer for a GitHub Pull Request titled \"{}\". \
-                        Please provide a brief but comprehensive review of the changes in the pull request, highlighting key concerns, potential improvements, and suggestions. \
-                        Remember to stay within a character limit of \"{}\" for the review.",
+                        Please provide a brief but comprehensive review of the changes in the pull request, highlighting key concerns and suggestions. \
+                        Remember to stay within a character limit of \"{}\" for the review in total for all the comment.",
                         title, CHAR_SOFT_LIMIT);
     let mut openai = OpenAIFlows::new();
     openai.set_retry_times(3);
