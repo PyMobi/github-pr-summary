@@ -16,8 +16,8 @@ use std::env;
 //   the max token size or word count for GPT4 is 8192
 //   the max token size or word count for GPT35Turbo is 4096
 static CHAR_SOFT_LIMIT : usize = 9000;
-// static MODEL : ChatModel = ChatModel::GPT35Turbo;
-static MODEL : ChatModel = ChatModel::GPT4;
+static MODEL : ChatModel = ChatModel::GPT35Turbo;
+// static MODEL : ChatModel = ChatModel::GPT4;
 
 #[no_mangle]
 #[tokio::main(flavor = "current_thread")]
@@ -169,8 +169,8 @@ async fn handler(
 
     let chat_id = format!("PR#{pull_number}");
     let system = &format!("You are an experienced software developer acting as a reviewer for a GitHub Pull Request titled \"{}\". \
-                        Please provide a concise review of the changes, addressing important concerns, potential improvements, and suggestions. \
-                        Ensure the total character count of your response remains below 9000 characters.",
+                        Ensure the total character count of your response remains below 9000 characters. \
+                        Please provide a concise review of the changes.",
                         title);
     let mut openai = OpenAIFlows::new();
     openai.set_retry_times(3);
