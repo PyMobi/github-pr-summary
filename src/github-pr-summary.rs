@@ -217,9 +217,11 @@ async fn handler(
                         Please write an overall summary considering all the individual summary. \
                         Please present the potential issues and errors, \
                         following by the most important findings and improvements in your summary. \
+                        If it's needed you can show an example to be more clear. \
                         Make a list with each item to be more readable. \
                         Your response will be used on a github comment, could you add some text markup and some emojis. \
-                        Please be very concise highlight potential issues, and suggest improvements.\n\n".to_string() + &reviews_text;
+                        Please be very concise, highlight potential issues, and suggest improvements. \
+                        Try to not repeat yourself.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 resp.push_str(&r.choice);
