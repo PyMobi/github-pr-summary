@@ -50,7 +50,6 @@ async fn handler(
     trigger_phrase: &str,
     payload: EventPayload,
 ) {
-    let mut new_commit : bool = false;
     let (title, pull_number, _contributor) = match payload {
         EventPayload::PullRequestEvent(e) => {
 
@@ -63,7 +62,6 @@ async fn handler(
             if e.action == PullRequestEventAction::Opened {
                 log::debug!("Received payload: PR Opened");
             } else if e.action == PullRequestEventAction::Synchronize {
-                new_commit = true;
                 log::debug!("Received payload: PR Synced");
             } else {
                 log::debug!("Not an Opened or Synchronize event for PR");
@@ -107,32 +105,15 @@ async fn handler(
     let octo = get_octo(&GithubLogin::Default);
     let issues = octo.issues(owner, repo);
     let mut comment_id: CommentId = 0u64.into();
-    if new_commit {
-        // Find the first "Hello, I am a [code review bot]" comment to update
-        match issues.list_comments(pull_number).send().await {
-            Ok(comments) => {
-                for c in comments.items {
-                    if c.body.unwrap_or_default().starts_with("Hello, I am a [code review bot]") {
-                        comment_id = c.id;
-                        break;
-                    }
-                }
-            }
-            Err(error) => {
-                log::error!("Error getting comments: {}", error);
-                return;
-            }
+
+    // Create a new comment
+    match issues.create_comment(pull_number, "Hello :hand:, I am a [code review bot](https://github.com/PyMobi/github-pr-summary/) on [PyMobi](https://github.com/PyMobi) :robot:.\n\nIt could take a few minutes for me to analyze this PR. Relax, grab a cup of coffee and check back later. Thanks!").await {
+        Ok(comment) => {
+            comment_id = comment.id;
         }
-    } else {
-        // PR OPEN or Trigger phrase: create a new comment
-        match issues.create_comment(pull_number, "Hello :hand:, I am a [code review bot](https://github.com/PyMobi/github-pr-summary/) on [PyMobi](https://github.com/PyMobi) :robot:.\n\nIt could take a few minutes for me to analyze this PR. Relax, grab a cup of coffee and check back later. Thanks!").await {
-            Ok(comment) => {
-                comment_id = comment.id;
-            }
-            Err(error) => {
-                log::error!("Error posting comment: {}", error);
-                return;
-            }
+        Err(error) => {
+            log::error!("Error posting comment: {}", error);
+            return;
         }
     }
     if comment_id == 0u64.into() { return; }
