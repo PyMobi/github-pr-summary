@@ -213,8 +213,8 @@ async fn handler(
             system_prompt: Some(system),
         };
         let question = "Here is a set of summaries for software source code. \
-                        Each summary starts with a ------ line. \
-                        Please write an overall summary, highlight potential issues, and suggest improvements. \
+                        Create one summary using all commits prioritizing last changes in commits. \
+                        Please write an overall summary but very concise, highlight potential issues, and suggest improvements. \
                         Please keep your review concise and within the character max limit of 9000.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
