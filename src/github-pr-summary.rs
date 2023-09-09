@@ -190,12 +190,11 @@ async fn handler(
                     reviews_text.push_str(&r.choice);
                     reviews_text.push_str("\n");
                 }
-                // Commented because we don't want a detail of each commit
-                // let mut review = String::new();
-                // review.push_str(&format!("### [Commit {commit_hash}](https://github.com/{owner}/{repo}/pull/{pull_number}/commits/{commit_hash})\n"));
-                // review.push_str(&r.choice);
-                // review.push_str("\n\n");
-                // reviews.push(review);
+                let mut review = String::new();
+                review.push_str(&format!("### [Commit {commit_hash}](https://github.com/{owner}/{repo}/pull/{pull_number}/commits/{commit_hash})\n"));
+                review.push_str(&r.choice);
+                review.push_str("\n\n");
+                reviews.push(review);
                 log::debug!("Received OpenAI resp for patch: {}", commit_hash);
             }
             Err(e) => {
@@ -230,9 +229,10 @@ async fn handler(
             }
         }
     }
-    for (_i, review) in reviews.iter().enumerate() {
-        resp.push_str(review);
-    }
+    // Commented because we don't want a detail of each commit in the comment
+    // for (_i, review) in reviews.iter().enumerate() {
+    //     resp.push_str(review);
+    // }
 
     // Send the entire response to GitHub PR
     // issues.create_comment(pull_number, resp).await.unwrap();
