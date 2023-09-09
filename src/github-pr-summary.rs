@@ -27,7 +27,7 @@ pub async fn run() -> anyhow::Result<()> {
     log::debug!("Running github-pr-summary/main");
 
     let owner = env::var("github_owner").unwrap_or("PyMobi".to_string());
-    let repo = env::var("github_repo").unwrap_or("test".to_string());
+    let repo = env::var("github_repo").unwrap_or("itsocial_backend".to_string());
     let trigger_phrase = env::var("trigger_phrase").unwrap_or("flows summarize".to_string());
 
     let events = vec!["pull_request", "issue_comment"];
