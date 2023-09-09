@@ -218,7 +218,7 @@ async fn handler(
                         Please present the potential issues and errors, the most important findings and improvements in your summary. \
                         Make a list with each item to be more readable. \
                         Please be very concise, highlight potential issues, and suggest improvements. \
-                        Try to not repeat yourself. \
+                        Try to not repeat yourself in your answers. \
                         Your response will be used on a github comment, could you add some text markup and some emojis.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
