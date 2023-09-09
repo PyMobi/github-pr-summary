@@ -182,7 +182,7 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = &format!("Review the GitHub patch linked below and summarize the key changes, highlight potential issues, and suggest improvements. Please keep your review concise and within the character limit of \"{}\".", CHAR_SOFT_LIMIT);
+        let question = "The following is a GitHub patch. Please summarize the key changes and identify potential problems. Start with the most important findings.\n\n".to_string() + truncate(commit, CHAR_SOFT_LIMIT);
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 if reviews_text.len() < CHAR_SOFT_LIMIT {
@@ -212,7 +212,10 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = "Here is a set of summaries for software source code patches. Each summary starts with a ------ line. Please write an overall summary considering all the individual summary. Please present the potential issues and errors first, following by the most important findings, in your summary.\n\n".to_string() + &reviews_text;
+        let question = "Here is a set of summaries for software source code. \
+                        Each summary starts with a ------ line. \
+                        Please write an overall summary, highlight potential issues, and suggest improvements. \
+                        Please keep your review concise and within the character max limit of 9000.\n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 resp.push_str(&r.choice);
