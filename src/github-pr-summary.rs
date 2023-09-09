@@ -182,7 +182,15 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = "The following is a GitHub patch. Please summarize the key changes and identify potential problems. Start with the most important findings.\n\n".to_string() + truncate(commit, CHAR_SOFT_LIMIT);
+        let question = "Please summarize the key code changes introduced by this pull request. \
+                        Highlight any changes that might impact performance, security, or functionality. \
+                        Also, identify potential problems or deviations from coding standards.\
+                        Please be very concise and try to not repeat yourself in your answers. \
+                        Start with the most important findings or issues that need immediate attention. \
+                        Afterward, provide a detailed summary of the entire patch. \
+                        Please also make suggestions for improvements and optimizations. \
+                        \n\n".to_string() + truncate(commit, CHAR_SOFT_LIMIT);
+
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 if reviews_text.len() < CHAR_SOFT_LIMIT {
@@ -212,14 +220,11 @@ async fn handler(
             restart: true,
             system_prompt: Some(system),
         };
-        let question = "Here is a set of summaries for software source code patches. \
-                        Each summary starts with a ------ line. \
-                        Please write an overall summary considering all the individual summary. \
-                        Please present the potential issues and errors, the most important findings and improvements in your summary. \
-                        Make a list with each item to be more readable. \
-                        Please be very concise, highlight potential issues, and suggest improvements. \
-                        Try to not repeat yourself in your answers. \
-                        Your response will be used on a github comment, could you add some text markup and some emojis.\n\n".to_string() + &reviews_text;
+        let question = "Based on the individual summaries above, please provide an overall conclusion for this pull request. \
+                        Highlight potential issues, suggest improvements, and summarize the most critical findings. \
+                        Please be very concise and try to not repeat yourself in your answers. \
+                        Use emojis and text markup to make your response more engaging and readable. \
+                        \n\n".to_string() + &reviews_text;
         match openai.chat_completion(&chat_id, &question, &co).await {
             Ok(r) => {
                 resp.push_str(&r.choice);
