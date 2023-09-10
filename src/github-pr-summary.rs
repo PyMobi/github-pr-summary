@@ -63,6 +63,7 @@ async fn handler(
                 log::debug!("Received payload: PR Opened");
             } else if e.action == PullRequestEventAction::Synchronize {
                 log::debug!("Received payload: PR Synced");
+                return;
             } else {
                 log::debug!("Not an Opened or Synchronize event for PR");
                 return;
